@@ -1,0 +1,259 @@
+{
+  "agentspec_version": "26.1.0",
+  "component_type": "Flow",
+  "id": "media-feed-lister-agent-flow",
+  "name": "Media Feed Lister Agent",
+  "description": "Lists videos from a YouTube channel or episodes from a podcast website (RSS/Atom discovery). Stateless leaf — calls media_feed_youtube_list or media_feed_podcast_list. Composes with @cinatra-ai/media-transcript-agent to transcribe each episode.",
+  "metadata": {
+    "cinatra": {
+      "type": "flow",
+      "packageName": "@cinatra-ai/media-feed-lister-agent",
+      "packageVersion": "0.1.2",
+      "hitlScreens": [],
+      "llm": {
+        "preferredProvider": "openai",
+        "preferredModel": "gpt-5.5"
+      }
+    }
+  },
+  "inputs": [
+    { "title": "url", "type": "string" },
+    {
+      "title": "source",
+      "type": "string",
+      "json_schema": { "enum": ["auto", "youtube", "podcast"] },
+      "default": "auto"
+    },
+    {
+      "title": "latestCount",
+      "type": "integer",
+      "json_schema": { "minimum": 1, "maximum": 50 },
+      "default": 10
+    },
+    {
+      "title": "filterMode",
+      "type": "string",
+      "json_schema": { "enum": ["latest", "date_range"] },
+      "default": "latest"
+    },
+    { "title": "dateFrom", "type": "string", "default": "" },
+    { "title": "dateTo", "type": "string", "default": "" }
+  ],
+  "outputs": [
+    { "title": "sourceTitle", "type": "string" },
+    { "title": "sourceUrl", "type": "string" },
+    { "title": "detectedType", "type": "string" },
+    {
+      "title": "episodes",
+      "type": "array",
+      "json_schema": { "items": { "type": "object" } }
+    },
+    { "title": "failureCode", "type": "string" }
+  ],
+  "start_node": { "$component_ref": "start" },
+  "nodes": [
+    { "$component_ref": "start" },
+    { "$component_ref": "list" },
+    { "$component_ref": "end" }
+  ],
+  "control_flow_connections": [
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "start_to_list",
+      "from_node": { "$component_ref": "start" },
+      "to_node": { "$component_ref": "list" }
+    },
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "list_to_end",
+      "from_node": { "$component_ref": "list" },
+      "to_node": { "$component_ref": "end" }
+    }
+  ],
+  "data_flow_connections": [
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_url_to_list_url",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "url",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "url"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_source_to_list_source",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "source",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "source"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_latestCount_to_list_latestCount",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "latestCount",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "latestCount"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_filterMode_to_list_filterMode",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "filterMode",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "filterMode"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_dateFrom_to_list_dateFrom",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "dateFrom",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "dateFrom"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "start_dateTo_to_list_dateTo",
+      "source_node": { "$component_ref": "start" },
+      "source_output": "dateTo",
+      "destination_node": { "$component_ref": "list" },
+      "destination_input": "dateTo"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_sourceTitle_to_end_sourceTitle",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "sourceTitle",
+      "destination_node": { "$component_ref": "end" },
+      "destination_input": "sourceTitle"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_sourceUrl_to_end_sourceUrl",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "sourceUrl",
+      "destination_node": { "$component_ref": "end" },
+      "destination_input": "sourceUrl"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_detectedType_to_end_detectedType",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "detectedType",
+      "destination_node": { "$component_ref": "end" },
+      "destination_input": "detectedType"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_episodes_to_end_episodes",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "episodes",
+      "destination_node": { "$component_ref": "end" },
+      "destination_input": "episodes"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_failureCode_to_end_failureCode",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "failureCode",
+      "destination_node": { "$component_ref": "end" },
+      "destination_input": "failureCode"
+    }
+  ],
+  "$referenced_components": {
+    "start": {
+      "component_type": "StartNode",
+      "id": "start",
+      "name": "Inputs",
+      "metadata": {
+        "cinatra": {
+          "required": ["url"],
+          "hidden": ["source", "latestCount", "filterMode", "dateFrom", "dateTo"]
+        }
+      },
+      "inputs": [
+        { "title": "url", "type": "string" },
+        {
+          "title": "source",
+          "type": "string",
+          "json_schema": { "enum": ["auto", "youtube", "podcast"] },
+          "default": "auto"
+        },
+        {
+          "title": "latestCount",
+          "type": "integer",
+          "json_schema": { "minimum": 1, "maximum": 50 },
+          "default": 10
+        },
+        {
+          "title": "filterMode",
+          "type": "string",
+          "json_schema": { "enum": ["latest", "date_range"] },
+          "default": "latest"
+        },
+        { "title": "dateFrom", "type": "string", "default": "" },
+        { "title": "dateTo", "type": "string", "default": "" }
+      ]
+    },
+    "list": {
+      "component_type": "ApiNode",
+      "id": "list",
+      "name": "List media feed via cinatra-mcp",
+      "url": "{{CINATRA_BASE_URL}}/api/llm-bridge",
+      "http_method": "POST",
+      "data": {
+        "agent_id": "media-feed-lister-agent",
+        "system": "You are a stateless media feed lister. Follow the SKILL.md step-by-step. Call media_feed_youtube_list or media_feed_podcast_list (per the URL classification rules in SKILL.md) and return a single JSON object with {sourceTitle, sourceUrl, detectedType, episodes, failureCode} — nothing else.",
+        "user": "{# pyagentspec-input-hint (do not remove): {{ url }} {{ source }} {{ latestCount }} {{ filterMode }} {{ dateFrom }} {{ dateTo }} #}List episodes/videos for the following input.\n\nurl: {{ url }}\nsource (auto|youtube|podcast): {{ source }}\nlatestCount (1-50): {{ latestCount }}\nfilterMode (latest|date_range): {{ filterMode }}\ndateFrom (YYYY-MM-DD or empty): {{ dateFrom }}\ndateTo (YYYY-MM-DD or empty): {{ dateTo }}\n\nReturn ONLY the JSON object specified in SKILL.md — keys: sourceTitle, sourceUrl, detectedType, episodes, failureCode.",
+        "cinatra_llm": {
+          "preferredProvider": "openai",
+          "preferredModel": "gpt-5.5"
+        }
+      },
+      "inputs": [
+        { "title": "url", "type": "string" },
+        { "title": "source", "type": "string" },
+        { "title": "latestCount", "type": "integer" },
+        { "title": "filterMode", "type": "string" },
+        { "title": "dateFrom", "type": "string" },
+        { "title": "dateTo", "type": "string" }
+      ],
+      "outputs": [
+        { "title": "sourceTitle", "type": "string" },
+        { "title": "sourceUrl", "type": "string" },
+        { "title": "detectedType", "type": "string" },
+        {
+          "title": "episodes",
+          "type": "array",
+          "json_schema": { "items": { "type": "object" } }
+        },
+        { "title": "failureCode", "type": "string" }
+      ],
+      "metadata": {
+        "cinatra": {
+          "riskClass": "read_only",
+          "requiresApproval": false,
+          "packageName": "@cinatra-ai/media-feed-lister-agent",
+          "description": "Single ApiNode -> /api/llm-bridge. Bridge auto-discovers SKILL.md from agents/cinatra/media-feed-lister-agent/skills/media-feed-lister-agent/SKILL.md (via agent_id). metadata.cinatra.toolboxes is INTENTIONALLY OMITTED so the always-injected Cinatra self-MCP tools remain available to the LLM, including media_feed_youtube_list and media_feed_podcast_list."
+        }
+      }
+    },
+    "end": {
+      "component_type": "EndNode",
+      "id": "end",
+      "name": "End",
+      "outputs": [
+        { "title": "sourceTitle", "type": "string", "default": "" },
+        { "title": "sourceUrl", "type": "string", "default": "" },
+        { "title": "detectedType", "type": "string", "default": "" },
+        {
+          "title": "episodes",
+          "type": "array",
+          "json_schema": { "items": { "type": "object" } },
+          "default": []
+        },
+        { "title": "failureCode", "type": "string", "default": "" }
+      ]
+    }
+  }
+}
