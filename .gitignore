@@ -1,0 +1,23 @@
+# Dependencies (CI installs fresh; standalone repos ship no committed lockfile)
+node_modules/
+pnpm-lock.yaml
+
+# Build output (tsconfig outDir) and pack artifacts
+dist/
+*.tsbuildinfo
+*.tgz
+
+# Test output
+coverage/
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
