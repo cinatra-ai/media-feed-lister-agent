@@ -1,6 +1,6 @@
 {
   "name": "@cinatra-ai/media-feed-lister-agent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "description": "Lists the videos in a YouTube channel or the episodes in a podcast (via RSS/Atom feed discovery). Composes with @cinatra-ai/media-transcript-agent to enable 'transcribe the last N episodes' workflows end-to-end.",
   "type": "module",
