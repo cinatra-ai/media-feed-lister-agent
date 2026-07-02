@@ -11,6 +11,27 @@
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
-    "dependencies": []
+    "dependencies": [
+      {
+        "packageName": "@cinatra-ai/media-feeds-connector",
+        "edgeType": "runtime",
+        "versionConstraint": {
+          "kind": "exact",
+          "version": "0.1.3"
+        },
+        "requirement": "required",
+        "kind": "connector"
+      }
+    ],
+    "consumes": [
+      {
+        "primitive": "media_feed_podcast_list",
+        "requirement": "required"
+      },
+      {
+        "primitive": "media_feed_youtube_list",
+        "requirement": "required"
+      }
+    ]
   }
 }
