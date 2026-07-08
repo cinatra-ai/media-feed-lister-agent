@@ -11,6 +11,7 @@
   "cinatra": {
     "apiVersion": "cinatra.ai/v1",
     "kind": "agent",
+    "displayName": "Media Feed Lister Agent",
     "dependencies": [
       {
         "packageName": "@cinatra-ai/media-feeds-connector",
@@ -32,6 +33,15 @@
         "primitive": "media_feed_youtube_list",
         "requirement": "required"
       }
-    ]
+    ],
+    "packageType": "agent",
+    "manifestVersion": 1,
+    "sourceTemplateId": "media-feed-lister-agent-flow",
+    "sourceVersionId": "9c452dda-7131-4e91-bfb3-d9707e1e63d3",
+    "sourceVersionNumber": 1,
+    "riskLevel": "low",
+    "hasApprovalGates": false,
+    "toolAccess": [],
+    "ownerOrgId": null
   }
 }
