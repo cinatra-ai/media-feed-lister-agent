@@ -27,16 +27,28 @@
       "title": "latestCount",
       "type": "integer",
       "json_schema": { "minimum": 1, "maximum": 50 },
-      "default": 10
+      "default": 10,
+      "description": "How many of the latest episodes to list."
     },
     {
       "title": "filterMode",
       "type": "string",
       "json_schema": { "enum": ["latest", "date_range"] },
-      "default": "latest"
+      "default": "latest",
+      "description": "List the latest episodes, or the ones inside a date range."
     },
-    { "title": "dateFrom", "type": "string", "default": "" },
-    { "title": "dateTo", "type": "string", "default": "" }
+    {
+      "title": "dateFrom",
+      "type": "string",
+      "default": "",
+      "description": "Start of the date range (YYYY-MM-DD), when a range is chosen."
+    },
+    {
+      "title": "dateTo",
+      "type": "string",
+      "default": "",
+      "description": "End of the date range (YYYY-MM-DD), when a range is chosen."
+    }
   ],
   "outputs": [
     { "title": "sourceTitle", "type": "string" },
@@ -167,7 +179,7 @@
       "metadata": {
         "cinatra": {
           "required": ["url"],
-          "hidden": ["source", "latestCount", "filterMode", "dateFrom", "dateTo"]
+          "hidden": ["source"]
         }
       },
       "inputs": [
@@ -182,16 +194,28 @@
           "title": "latestCount",
           "type": "integer",
           "json_schema": { "minimum": 1, "maximum": 50 },
-          "default": 10
+          "default": 10,
+          "description": "How many of the latest episodes to list."
         },
         {
           "title": "filterMode",
           "type": "string",
           "json_schema": { "enum": ["latest", "date_range"] },
-          "default": "latest"
+          "default": "latest",
+          "description": "List the latest episodes, or the ones inside a date range."
         },
-        { "title": "dateFrom", "type": "string", "default": "" },
-        { "title": "dateTo", "type": "string", "default": "" }
+        {
+          "title": "dateFrom",
+          "type": "string",
+          "default": "",
+          "description": "Start of the date range (YYYY-MM-DD), when a range is chosen."
+        },
+        {
+          "title": "dateTo",
+          "type": "string",
+          "default": "",
+          "description": "End of the date range (YYYY-MM-DD), when a range is chosen."
+        }
       ]
     },
     "list": {
