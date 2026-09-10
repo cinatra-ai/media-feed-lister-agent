@@ -178,7 +178,7 @@
       "name": "Inputs",
       "metadata": {
         "cinatra": {
-          "required": ["url"],
+          "required": ["url", "latestCount", "filterMode", "dateFrom", "dateTo"],
           "hidden": ["source"]
         }
       },
