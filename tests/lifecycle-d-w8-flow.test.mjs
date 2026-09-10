@@ -20,6 +20,6 @@ test("(16) the count and the window are fields the person sets", () => {
   }
 });
 
-test("(16) the address stays the only thing the run insists on", () => {
-  assert.deepEqual(start.metadata.cinatra.required, ["url"]);
+test("(16) the address, the count and the window are what the form draws", () => {
+  assert.deepEqual(start.metadata.cinatra.required, ["url", "latestCount", "filterMode", "dateFrom", "dateTo"]);
 });
