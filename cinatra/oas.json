@@ -57,7 +57,20 @@
     {
       "title": "episodes",
       "type": "array",
-      "json_schema": { "items": { "type": "object" } }
+      "json_schema": {
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "string" },
+            "title": { "type": "string" },
+            "link": { "type": "string" },
+            "mediaUrl": { "type": "string" },
+            "description": { "type": "string" },
+            "publishedAt": { "type": "string" },
+            "duration": { "type": "string" }
+          }
+        }
+      }
     },
     { "title": "failureCode", "type": "string" }
   ],
@@ -248,7 +261,20 @@
         {
           "title": "episodes",
           "type": "array",
-          "json_schema": { "items": { "type": "object" } }
+          "json_schema": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "link": { "type": "string" },
+                "mediaUrl": { "type": "string" },
+                "description": { "type": "string" },
+                "publishedAt": { "type": "string" },
+                "duration": { "type": "string" }
+              }
+            }
+          }
         },
         { "title": "failureCode", "type": "string" }
       ],
@@ -272,7 +298,20 @@
         {
           "title": "episodes",
           "type": "array",
-          "json_schema": { "items": { "type": "object" } },
+          "json_schema": {
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "string" },
+                "title": { "type": "string" },
+                "link": { "type": "string" },
+                "mediaUrl": { "type": "string" },
+                "description": { "type": "string" },
+                "publishedAt": { "type": "string" },
+                "duration": { "type": "string" }
+              }
+            }
+          },
           "default": []
         },
         { "title": "failureCode", "type": "string", "default": "" }
