@@ -78,6 +78,7 @@
   "nodes": [
     { "$component_ref": "start" },
     { "$component_ref": "list" },
+    { "$component_ref": "feed_summary" },
     { "$component_ref": "end" }
   ],
   "control_flow_connections": [
@@ -89,8 +90,14 @@
     },
     {
       "component_type": "ControlFlowEdge",
-      "name": "list_to_end",
+      "name": "list_to_feed_summary",
       "from_node": { "$component_ref": "list" },
+      "to_node": { "$component_ref": "feed_summary" }
+    },
+    {
+      "component_type": "ControlFlowEdge",
+      "name": "feed_summary_to_end",
+      "from_node": { "$component_ref": "feed_summary" },
       "to_node": { "$component_ref": "end" }
     }
   ],
@@ -182,6 +189,30 @@
       "source_output": "failureCode",
       "destination_node": { "$component_ref": "end" },
       "destination_input": "failureCode"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_episodes_to_feed_summary_episodes",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "episodes",
+      "destination_node": { "$component_ref": "feed_summary" },
+      "destination_input": "episodes"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_failureCode_to_feed_summary_failureCode",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "failureCode",
+      "destination_node": { "$component_ref": "feed_summary" },
+      "destination_input": "failureCode"
+    },
+    {
+      "component_type": "DataFlowEdge",
+      "name": "list_sourceTitle_to_feed_summary_sourceTitle",
+      "source_node": { "$component_ref": "list" },
+      "source_output": "sourceTitle",
+      "destination_node": { "$component_ref": "feed_summary" },
+      "destination_input": "sourceTitle"
     }
   ],
   "$referenced_components": {
@@ -284,6 +315,22 @@
           "requiresApproval": false,
           "packageName": "@cinatra-ai/media-feed-lister-agent",
           "description": "Single ApiNode -> /api/llm-bridge. The agent's operating instructions are inline in data.system (no embedded skill bundle). metadata.cinatra.toolboxes is INTENTIONALLY OMITTED so the always-injected Cinatra self-MCP tools remain available to the LLM, including media_feed_youtube_list and media_feed_podcast_list."
+        }
+      }
+    },
+    "feed_summary": {
+      "component_type": "OutputMessageNode",
+      "id": "feed_summary",
+      "name": "Feed listing result",
+      "inputs": [
+        { "title": "episodes", "type": "array", "default": [] },
+        { "title": "failureCode", "type": "string", "default": "" },
+        { "title": "sourceTitle", "type": "string", "default": "" }
+      ],
+      "message": "{# pyagentspec-input-hint (do not remove): {{ episodes }} {{ failureCode }} {{ sourceTitle }} #}{% if failureCode == 'UNSUPPORTED_URL' or failureCode == 'MEDIA_FEED_YOUTUBE_INVALID_URL' or failureCode == 'MEDIA_FEED_PODCAST_INVALID_URL' %}No episodes were listed: the address is not a YouTube channel or a podcast website this agent can read.{% elif failureCode == 'MEDIA_FEED_YOUTUBE_KEY_MISSING' or failureCode == 'MEDIA_FEED_YOUTUBE_AUTH' %}No episodes were listed: the YouTube connection is not set up or was refused, so the channel could not be read.{% elif failureCode == 'MEDIA_FEED_YOUTUBE_QUOTA' %}No episodes were listed: the YouTube connection has used up its daily allowance, so try again later.{% elif failureCode == 'MEDIA_FEED_PODCAST_NO_FEED' %}No episodes were listed: no podcast feed was found on that website.{% elif failureCode %}No episodes were listed: the channel or the feed could not be read.{% elif not episodes %}No episodes were found at this address for the count and the dates you set.{% elif episodes | length == 1 %}One episode was listed{% if sourceTitle %} from {{ sourceTitle }}{% endif %}.{% else %}{{ episodes | length }} episodes were listed{% if sourceTitle %} from {{ sourceTitle }}{% endif %}.{% endif %}",
+      "metadata": {
+        "cinatra": {
+          "purpose": "plain-language-feed-listing-ending"
         }
       }
     },
