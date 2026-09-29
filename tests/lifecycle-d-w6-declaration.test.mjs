@@ -73,40 +73,23 @@ test("the manifest claims a gate only when the flow has one", () => {
 // `episodes` filing one artifact per member with the episode's data as the
 // agent emits it and the title from the episode's title.
 //
-// NONE of the three can land today, and this file pins that state with the
-// reason, so a later wave cannot add one part without saying why.
+// The three parts travel together: the host's member-field fan-out files each
+// episode object as its own artifact, and the episode extension is pinned in
+// the development extension lock, so the required edge resolves on an
+// installation that carries this agent.
 //
-// The binding: the host binding grammar (`artifactOutputBindingSchema`) is a
-// strict single-value schema — one content output, one mime, one title, with no
-// member or fan-out concept. A fan-out annotation is REFUSED by the
-// compile-time validator and by this repository's own vendored gate, both of
-// which mirror that one grammar.
-//
-// The typed produces entry: a produces entry no materialization road reaches is,
-// from this wave on, a refusal at publish rather than an advisory line, so an
-// entry landed ahead of the binding that would resolve it would make this
-// package unpublishable.
-//
-// The dependency edge: the episode extension is in NEITHER extension lock, so
-// it is absent from a stock instance catalog. A REQUIRED edge on an absent
-// package makes the runtime install gate report a missing required dependency
-// and the agent stops being runnable — the edge would break a working agent to
-// promise a kind nothing yet resolves.
-//
-// All three parts therefore travel together with the host-side fan-out road and
-// the episode extension pinning, neither of which this wave builds.
+// This repository's own vendored gate still reads the older single-value
+// binding grammar: it names the fan-out block in two warnings, which do not
+// fail the kind check.
 // ---------------------------------------------------------------------------
 
 const EPISODES = "@cinatra-ai/podcast-artifacts";
 
-test("6c — no edge on the episode extension stands ahead of its pinning", () => {
-  assert.equal(
-    artifactDependencies.find((d) => d.packageName === EPISODES),
-    undefined,
-    EPISODES +
-      " is in neither extension lock: a required edge on it would make this " +
-      "agent report a missing required dependency and stop being runnable",
-  );
+test("6c — the episode extension is a required artifact edge", () => {
+  const edge = artifactDependencies.find((d) => d.packageName === EPISODES);
+  assert.ok(edge, EPISODES + " is not an artifact edge of this agent");
+  assert.equal(edge.requirement, "required");
+  assert.equal(edge.edgeType, "runtime");
 });
 
 test("6c — the episodes output is the one a fan-out binding will name", () => {
@@ -116,8 +99,13 @@ test("6c — the episodes output is the one a fan-out binding will name", () => 
   assert.equal(episodes.type, "array");
 });
 
-test("6c — no produces entry and no binding stand ahead of the fan-out road", () => {
-  assert.equal(cinatra.produces, undefined);
+test("6c — the typed produces entry and the one fan-out binding stand together", () => {
+  assert.deepEqual(cinatra.produces, [
+    { extension: EPISODES, objectTypeId: EPISODES + ":artifact" },
+  ]);
   assert.equal(oas.metadata?.cinatra?.produces, undefined);
-  assert.deepEqual(bindings, []);
+  assert.deepEqual(
+    bindings.map((b) => [b.node, b.output, b.binding.extension, b.binding.fanOut?.titleFrom]),
+    [["end", "episodes", EPISODES, "member-field"]],
+  );
 });
