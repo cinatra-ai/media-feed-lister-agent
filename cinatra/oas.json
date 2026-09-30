@@ -359,7 +359,15 @@
               }
             }
           },
-          "default": []
+          "default": [],
+          "cinatra": {
+            "artifact": {
+              "extension": "@cinatra-ai/podcast-artifacts",
+              "contentFrom": "episodes",
+              "declaredMime": "application/json",
+              "fanOut": { "mode": "member", "titleFrom": "member-field", "titleField": "title" }
+            }
+          }
         },
         { "title": "failureCode", "type": "string", "default": "" }
       ]
